@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+test_js_binding/cmake-build-debug
+test_js_binding/.idea
