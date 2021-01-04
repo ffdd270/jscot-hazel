@@ -11,36 +11,66 @@ test_cpp_functions: list = [
 ]
 
 
+def test():
+    x: str = ''
+    for i in range(5):
+        if x == "x":
+            x = ''
+
+
+def add_token(token: str, tokens: dict, name_flag: bool, param_flag: bool, return_type_flag: bool):
+    params: list = tokens["params"]
+
+    if param_flag:
+        params.append(token)
+    elif return_type_flag:
+        tokens["return_type"] = token
+    elif name_flag:
+        tokens["name"] = token
+
+
 def make_token(function_str: str):
     tokens: dict = {"return_type": "", "name": "", "namespace": "", "params": []}
-    token: str  = ""
     space_flag: bool = False
     param_flag: bool = False
+    name_flag: bool = True
+    return_type_flag: bool = True
+    token: str = ""
+
+    token_continue_list = {"const": True}
 
     for char in function_str:
-        params: list = tokens["params"];
-
         if char == ";":  # 토큰 끝. 이건 확실하고..
-            if token != "":  # 끝 부분에 있는 건 리턴 파라미터라도 가정하자.
-                params.append(token)
+            add_token(token, tokens, name_flag, param_flag, return_type_flag)
             token = ""
             continue
         if char == " ":  # 이건 아닐 수도 있음. space 플래그를 올리자.
             space_flag = True
             continue
-        if space_flag and ( char == "*" or char == "&" ):  # 포인터, 레퍼런스면 토큰 확장.  
+        if space_flag and (char == "*" or char == "&"):  # 포인터, 레퍼런스면 토큰 확장.
             space_flag = False
             token += char
         elif char == "(":  # 새로운 토큰 시작
+            add_token(token, tokens, name_flag, param_flag, return_type_flag)
             param_flag = True
+            name_flag = False
+            token = ""
         elif char == ")":  # 파람 플래그 끝
+            add_token(token, tokens, name_flag, param_flag, return_type_flag)
             param_flag = False
+            token = ""
         elif char == ",": 
-            continue # SKIP.
+            continue  # SKIP.
         elif space_flag:  # 스페이스 플래그가 올라간 상태에서 새로운 문장은 새로운 토큰.
             space_flag = False
-            if token != "": 
-                tokens.append(token)
+            if token != "":
+                if token_continue_list.get(token):
+                    token += " " + char
+                    continue
+
+                add_token(token, tokens, name_flag, param_flag, return_type_flag)
+                if return_type_flag:
+                    return_type_flag = False
             token = char
         else:  # 아니라면 기존 토큰을 더 길게.
             token += char
@@ -49,12 +79,12 @@ def make_token(function_str: str):
 
 
 def make_function(tokens: list):
-    bind_str : str = '''bindFunc("{0}", &{0})'''.format(tokens[1]);
+    bind_str: str = '''bindFunc("{0}", &{0})'''.format(tokens["name"]);
     return bind_str
 
 
-for function_str in test_cpp_functions:
-    token = make_token(function_str)
-    print(token)
-    print(make_function(token))
+for func_str in test_cpp_functions:
+    result = make_token(func_str)
+    print(result)
+    print(make_function(result))
 
