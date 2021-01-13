@@ -7,7 +7,7 @@ test_cpp_functions: list = [
     # 여기부터는 파라미터 테스트
     'void test_params( int a, int b );',
     'int test_param2s( int & a, int * b );',
-    'void ImGui::Temp(int a, int b);'
+    'void ImGui::Temp(int a, int b);',
 ]
 
 
@@ -18,13 +18,16 @@ def test():
             x = ''
 
 
-def add_token(token: str, tokens: dict, name_flag: bool, param_flag: bool, return_type_flag: bool):
+def add_token(token: str, tokens: dict, name_flag: bool, param_flag: bool,
+              return_type_flag: bool, namespace_flag: bool = False):
     params: list = tokens["params"]
 
     if param_flag:
         params.append(token)
     elif return_type_flag:
         tokens["return_type"] = token
+    elif namespace_flag: # 이름보다 네임스페이스가 먼저 파싱되어야 함.
+        tokens["namespace"] = token
     elif name_flag:
         tokens["name"] = token
 
@@ -34,6 +37,7 @@ def make_token(function_str: str):
     space_flag: bool = False
     param_flag: bool = False
     name_flag: bool = True
+    namespace_flag: bool = False
     return_type_flag: bool = True
     token: str = ""
 
@@ -54,6 +58,12 @@ def make_token(function_str: str):
             add_token(token, tokens, name_flag, param_flag, return_type_flag)
             param_flag = True
             name_flag = False
+            token = ""
+        elif char == ":":  # 네임스페이스 토큰 시작 OR 끝
+            if not namespace_flag: # 한번은 튕기고. 두번째 부터 읽는다.
+                namespace_flag = True
+                continue
+            add_token(token, tokens, name_flag, param_flag, return_type_flag, namespace_flag)
             token = ""
         elif char == ")":  # 파람 플래그 끝
             add_token(token, tokens, name_flag, param_flag, return_type_flag)
@@ -78,8 +88,14 @@ def make_token(function_str: str):
     return tokens
 
 
-def make_function(tokens: list):
-    bind_str: str = '''bindFunc("{0}", &{0})'''.format(tokens["name"]);
+def make_function(tokens: dict):
+    bind_name: str = tokens["name"]
+    bind_function_name: str = tokens["name"]
+
+    if len(tokens["namespace"]) > 0:
+        bind_function_name = tokens["namespace"] + "::" + bind_function_name;
+
+    bind_str: str = '''bindFunc("{0}", &{1})'''.format(bind_name, bind_function_name);
     return bind_str
 
 
