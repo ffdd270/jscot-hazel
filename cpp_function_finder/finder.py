@@ -8,6 +8,9 @@ test_cpp_functions: list = [
     'void test_params( int a, int b );',
     'int test_param2s( int & a, int * b );',
     'void ImGui::Temp(int a, int b);',
+    '    IMGUI_API ImGuiContext* CreateContext(ImFontAtlas* shared_font_atlas = NULL);',
+    '    IMGUI_API ImGuiContext* GetCurrentContext();',
+    'IMGUI_API void          SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0, const ImVec2& pivot = ImVec2(0, 0)); '
 ]
 
 
@@ -30,6 +33,50 @@ def add_token(token: str, tokens: dict, name_flag: bool, param_flag: bool,
         tokens["namespace"] = token
     elif name_flag:
         tokens["name"] = token
+
+
+def make_default_token(function_str: str) -> list:
+    token_separator: dict = {
+        " ": True,
+        ",": True,
+        "(": True,
+        ")": True,
+        ";": True
+    }
+
+    token_char: dict = {
+        ",": True,
+        "(": True,
+        ")": True,
+    }
+
+    padding_tokens: dict = {
+        "*": True,
+        "&": True,
+    }
+
+    token: str = ""
+    tokens: list = []
+
+    for char in function_str:
+        if token_separator.get(char):
+            if len(token) > 0:
+                tokens.append(token)
+            token = ""
+
+            if token_char.get(char):
+                tokens.append(char)
+
+            continue
+
+        if padding_tokens.get(char) and len(tokens) > 0 and len(token) == 0:
+            index: int = len(tokens) - 1
+            tokens[index] = tokens[index] + char
+            continue
+
+        token += char
+
+    return tokens
 
 
 def make_token(function_str: str):
@@ -100,7 +147,6 @@ def make_function(tokens: dict):
 
 
 for func_str in test_cpp_functions:
-    result = make_token(func_str)
+    result = make_default_token(func_str)
     print(result)
-    print(make_function(result))
 
