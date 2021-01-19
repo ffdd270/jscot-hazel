@@ -106,6 +106,51 @@ def identify_tokens(tokens: list) -> dict:
     return token_dict
 
 
+def identify_param_tokens(param_tokens: list) -> list:
+    # param -> { type:, name: }
+    param_list = []
+    param_len = len(param_tokens)
+
+    if param_len == 2:  # 괄호밖에 없음
+        return []
+
+    # 디폴트 벨류 길이가 어느정도 되는가?
+    token_default_value_len: int = 0
+    decode_default_value: bool = False
+    clone_param_tokens = param_tokens.copy()
+    default_value_depth = 0 # 소괄호 같은 것들
+
+    for i in range(len(clone_param_tokens)):
+        if i == 0:  # 처음이면 무시
+            continue
+
+        token = clone_param_tokens[i]
+
+        if token == 'const':  # 뒷 토큰이랑 결합.
+            clone_param_tokens[i + 1] = token + " " + clone_param_tokens[i + 1]
+        elif token == "=":
+            decode_default_value = True
+            token_default_value_len = 1
+        elif token == "(":
+            default_value_depth += 1
+            token_default_value_len += 1
+        elif token == ")" and (i != param_len - 1): # 마지막은 아님
+            default_value_depth -= 1
+            token_default_value_len += 1
+        elif (token == "," and default_value_depth == 0) or (i == param_len - 1):  # 이제 이 토큰은 끝. ,거나 끄팅거나.
+            # 투 칸 빼진게 타입.
+            param_type = clone_param_tokens[i - token_default_value_len - 2]
+            param_name = clone_param_tokens[i - token_default_value_len - 1]
+            param_list.append({"type": param_type, "name": param_name})
+
+            decode_default_value = False
+            token_default_value_len = 0
+        elif decode_default_value:
+            token_default_value_len += 1
+
+    return param_list
+
+
 def make_function(tokens: dict):
     bind_name: str = tokens["name"]
     bind_function_name: str = tokens["name"]
@@ -119,5 +164,7 @@ def make_function(tokens: dict):
 
 for func_str in test_cpp_functions:
     result = make_default_token(func_str)
-    print(identify_tokens(result))
+    identify_token_result = identify_tokens(result)
+    identify_token_result["params"] = identify_param_tokens(identify_token_result["param_tokens"])
+    print(identify_token_result)
 
