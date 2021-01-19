@@ -79,60 +79,31 @@ def make_default_token(function_str: str) -> list:
     return tokens
 
 
-def make_token(function_str: str):
-    tokens: dict = {"return_type": "", "name": "", "namespace": "", "params": []}
-    space_flag: bool = False
-    param_flag: bool = False
-    name_flag: bool = True
-    namespace_flag: bool = False
-    return_type_flag: bool = True
-    token: str = ""
+def identify_tokens(tokens: list) -> dict:
+    # ( 왼쪽에 있는 건 함수 이름
+    # 이름 왼쪽 있는 건 리턴 타입
+    # ( 오른쪽에 있는 것부터는 파라미터들
 
-    token_continue_list = {"const": True}
+    token_dict : dict = {
+        "return_type": "",
+        "function_name": "",
+        "param_tokens": []  # TODO : 파라미터는 또 따로 해야징
+    }
 
-    for char in function_str:
-        if char == ";":  # 토큰 끝. 이건 확실하고..
-            add_token(token, tokens, name_flag, param_flag, return_type_flag)
-            token = ""
-            continue
-        if char == " ":  # 이건 아닐 수도 있음. space 플래그를 올리자.
-            space_flag = True
-            continue
-        if space_flag and (char == "*" or char == "&"):  # 포인터, 레퍼런스면 토큰 확장.
-            space_flag = False
-            token += char
-        elif char == "(":  # 새로운 토큰 시작
-            add_token(token, tokens, name_flag, param_flag, return_type_flag)
-            param_flag = True
-            name_flag = False
-            token = ""
-        elif char == ":":  # 네임스페이스 토큰 시작 OR 끝
-            if not namespace_flag: # 한번은 튕기고. 두번째 부터 읽는다.
-                namespace_flag = True
-                continue
-            add_token(token, tokens, name_flag, param_flag, return_type_flag, namespace_flag)
-            token = ""
-        elif char == ")":  # 파람 플래그 끝
-            add_token(token, tokens, name_flag, param_flag, return_type_flag)
-            param_flag = False
-            token = ""
-        elif char == ",": 
-            continue  # SKIP.
-        elif space_flag:  # 스페이스 플래그가 올라간 상태에서 새로운 문장은 새로운 토큰.
-            space_flag = False
-            if token != "":
-                if token_continue_list.get(token):
-                    token += " " + char
-                    continue
+    name_find_flag = False
 
-                add_token(token, tokens, name_flag, param_flag, return_type_flag)
-                if return_type_flag:
-                    return_type_flag = False
-            token = char
-        else:  # 아니라면 기존 토큰을 더 길게.
-            token += char
+    for i in range(len(tokens)):
+        token = tokens[i]
 
-    return tokens
+        if token == "(" and (not name_find_flag):
+            name_find_flag = True
+            token_dict["function_name"] = tokens[i - 1]
+            token_dict["return_type"] = tokens[i - 2]
+            token_dict["param_tokens"].append(tokens[i]) # 파라미터 토큰 시작
+        elif name_find_flag:  # 파라미터임
+            token_dict["param_tokens"].append(tokens[i])
+
+    return token_dict
 
 
 def make_function(tokens: dict):
@@ -148,5 +119,5 @@ def make_function(tokens: dict):
 
 for func_str in test_cpp_functions:
     result = make_default_token(func_str)
-    print(result)
+    print(identify_tokens(result))
 
