@@ -1,16 +1,69 @@
 test_cpp_functions: list = [
-    'void test();',
-    'int tato();', 
-    'int * ptr_return_type();',
-    'int& ref_return_type();',
-    'const int test_const_();',
-    # 여기부터는 파라미터 테스트
-    'void test_params( int a, int b );',
-    'int test_param2s( int & a, int * b );',
-    'void ImGui::Temp(int a, int b);',
-    '    IMGUI_API ImGuiContext* CreateContext(ImFontAtlas* shared_font_atlas = NULL);',
-    '    IMGUI_API ImGuiContext* GetCurrentContext();',
-    'IMGUI_API void          SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0, const ImVec2& pivot = ImVec2(0, 0)); '
+    "    IMGUI_API bool          IsWindowAppearing();",
+    "    IMGUI_API bool          IsWindowCollapsed();",
+    "    IMGUI_API bool          IsWindowFocused(ImGuiFocusedFlags flags=0); ",
+    "    IMGUI_API bool          IsWindowHovered(ImGuiHoveredFlags flags=0); ",
+    "    IMGUI_API ImDrawList*   GetWindowDrawList();                        ",
+    "    IMGUI_API ImVec2        GetWindowPos();                             ",
+    "    IMGUI_API ImVec2        GetWindowSize();                            ",
+    "    IMGUI_API float         GetWindowWidth();                           ",
+    "    IMGUI_API float         GetWindowHeight();                          ",
+    "    IMGUI_API void          SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0, const ImVec2& pivot = ImVec2(0, 0)); ",
+    "    IMGUI_API void          SetNextWindowSize(const ImVec2& size, ImGuiCond cond = 0);                  ",
+    "    IMGUI_API void          SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeCallback custom_callback = NULL, void* custom_callback_data = NULL); ",
+    "    IMGUI_API void          SetNextWindowContentSize(const ImVec2& size);                               ",
+    "    IMGUI_API void          SetNextWindowCollapsed(bool collapsed, ImGuiCond cond = 0);                 ",
+    "    IMGUI_API void          SetNextWindowFocus();                                                       ",
+    "    IMGUI_API void          SetNextWindowBgAlpha(float alpha);                                          ",
+    "    IMGUI_API void          SetWindowPos(const ImVec2& pos, ImGuiCond cond = 0);                        ",
+    "    IMGUI_API void          SetWindowSize(const ImVec2& size, ImGuiCond cond = 0);                      ",
+    "    IMGUI_API void          SetWindowCollapsed(bool collapsed, ImGuiCond cond = 0);                     ",
+    "    IMGUI_API void          SetWindowFocus();                                                           ",
+    "    IMGUI_API void          SetWindowFontScale(float scale);                                            ",
+    "    IMGUI_API void          SetWindowPos(const char* name, const ImVec2& pos, ImGuiCond cond = 0);      ",
+    "    IMGUI_API void          SetWindowSize(const char* name, const ImVec2& size, ImGuiCond cond = 0);    ",
+    "    IMGUI_API void          SetWindowCollapsed(const char* name, bool collapsed, ImGuiCond cond = 0);   ",
+    "    IMGUI_API void          SetWindowFocus(const char* name);                                           ",
+    "    IMGUI_API ImVec2        GetContentRegionAvail();                                        ",
+    "    IMGUI_API ImVec2        GetContentRegionMax();                                          ",
+    "    IMGUI_API ImVec2        GetWindowContentRegionMin();                                    ",
+    "    IMGUI_API ImVec2        GetWindowContentRegionMax();                                    ",
+    "    IMGUI_API float         GetWindowContentRegionWidth();                                  ",
+    "    IMGUI_API float         GetScrollX();                                                   ",
+    "    IMGUI_API float         GetScrollY();                                                   ",
+    "    IMGUI_API void          SetScrollX(float scroll_x);                                     ",
+    "    IMGUI_API void          SetScrollY(float scroll_y);                                     ",
+    "    IMGUI_API float         GetScrollMaxX();                                                ",
+    "    IMGUI_API float         GetScrollMaxY();                                                ",
+    "    IMGUI_API void          SetScrollHereX(float center_x_ratio = 0.5f);                    ",
+    "    IMGUI_API void          SetScrollHereY(float center_y_ratio = 0.5f);                    ",
+    "    IMGUI_API void          SetScrollFromPosX(float local_x, float center_x_ratio = 0.5f);  ",
+    "    IMGUI_API void          SetScrollFromPosY(float local_y, float center_y_ratio = 0.5f);  ",
+    "    IMGUI_API void          PushFont(ImFont* font);                                         ",
+    "    IMGUI_API void          PopFont();",
+    "    IMGUI_API void          PushStyleColor(ImGuiCol idx, ImU32 col);                        ",
+    "    IMGUI_API void          PushStyleColor(ImGuiCol idx, const ImVec4& col);",
+    "    IMGUI_API void          PopStyleColor(int count = 1);",
+    "    IMGUI_API void          PushStyleVar(ImGuiStyleVar idx, float val);                     ",
+    "    IMGUI_API void          PushStyleVar(ImGuiStyleVar idx, const ImVec2& val);             ",
+    "    IMGUI_API void          PopStyleVar(int count = 1);",
+    "    IMGUI_API void          PushAllowKeyboardFocus(bool allow_keyboard_focus);              ",
+    "    IMGUI_API void          PopAllowKeyboardFocus();",
+    "    IMGUI_API void          PushButtonRepeat(bool repeat);                                  ",
+    "    IMGUI_API void          PopButtonRepeat();",
+    "    IMGUI_API void          PushItemWidth(float item_width);                                ",
+    "    IMGUI_API void          PopItemWidth();",
+    "    IMGUI_API void          SetNextItemWidth(float item_width);                             ",
+    "    IMGUI_API float         CalcItemWidth();                                                ",
+    "    IMGUI_API void          PushTextWrapPos(float wrap_local_pos_x = 0.0f);                 ",
+    "    IMGUI_API void          PopTextWrapPos();",
+    "    IMGUI_API ImFont*       GetFont();                                                      ",
+    "    IMGUI_API float         GetFontSize();                                                  ",
+    "    IMGUI_API ImVec2        GetFontTexUvWhitePixel();                                       ",
+    "    IMGUI_API ImU32         GetColorU32(ImGuiCol idx, float alpha_mul = 1.0f);              ",
+    "    IMGUI_API ImU32         GetColorU32(const ImVec4& col);                                 ",
+    "    IMGUI_API ImU32         GetColorU32(ImU32 col);                                         ",
+    "    IMGUI_API const ImVec4& GetStyleColorVec4(ImGuiCol idx);                                ",
 ]
 
 
@@ -152,19 +205,47 @@ def identify_param_tokens(param_tokens: list) -> list:
 
 
 def make_function(tokens: dict):
-    bind_name: str = tokens["name"]
-    bind_function_name: str = tokens["name"]
+    return_type: str = tokens["return_type"]
+    function_name: str = tokens["function_name"]
+    param_names: str = ''
+    params_str: str = ''
+    params_len = len(tokens["params"])
+    namespace = "ImGui::"
 
-    if len(tokens["namespace"]) > 0:
-        bind_function_name = tokens["namespace"] + "::" + bind_function_name;
+    for i in range(params_len):
+        param = tokens["params"][i]
+        params_str += param["type"] + " " + param["name"]
+        param_names += param["name"]
+        if i != params_len - 1:
+            params_str += ", "
+            param_names += ", "
 
-    bind_str: str = '''bindFunc("{0}", &{1})'''.format(bind_name, bind_function_name);
-    return bind_str
+    prefix = ""
+    if return_type != "void":
+        prefix = "return "
+
+    function_head: str = '''{0} GENERATE_{1}({2})'''.format(return_type, function_name, params_str)
+    function_body: str = "\n{\n\t" + prefix + namespace + function_name + "(" + param_names + ");\n}";
+
+    return function_head + function_body
 
 
-for func_str in test_cpp_functions:
-    result = make_default_token(func_str)
-    identify_token_result = identify_tokens(result)
-    identify_token_result["params"] = identify_param_tokens(identify_token_result["param_tokens"])
-    print(identify_token_result)
+def make_bind(tokens: dict):
+    script_context_name: str = 'lua_context'
+    return '''bindFunc({0}, "{1}", {2});'''.format(script_context_name, tokens["function_name"], "GENERATE_" + tokens["function_name"])
 
+
+def execute():
+    bind_list: list = []
+
+    for func_str in test_cpp_functions:
+        result = make_default_token(func_str)
+        identify_token_result = identify_tokens(result)
+        identify_token_result["params"] = identify_param_tokens(identify_token_result["param_tokens"])
+        bind_list.append(make_bind(identify_token_result))
+        print(make_function(identify_token_result))
+
+    for bind in bind_list:
+        print(bind)
+
+execute()
