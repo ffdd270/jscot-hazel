@@ -65,10 +65,19 @@ duk_ret_t caller(duk_context * ctx, ReturnType(* func)(Param1) )
 template <typename ReturnType, typename Param1, typename Param2>
 duk_ret_t caller(duk_context * ctx, ReturnType(* func)(Param1, Param2) )
 {
-	ReturnType rtn = func( getParam<Param1>(ctx, 0) );
+	ReturnType rtn = func( getParam<Param1>(ctx, 0), getParam<Param2>(ctx, 1) );
 	getReturn( ctx, rtn );
 	return 1;
 }
+
+template <typename ReturnType, typename Param1, typename Param2, typename Param3>
+duk_ret_t caller(duk_context * ctx, ReturnType(* func)(Param1, Param2) )
+{
+	ReturnType rtn = func( getParam<Param1>(ctx, 0), getParam<Param2>(ctx, 1), getParam<Param3>(ctx, 2) );
+	getReturn( ctx, rtn );
+	return 1;
+}
+
 
 
 template <typename ReturnType, typename ...Params>
@@ -89,6 +98,10 @@ void bindFunc(  duk_context * ctx, const char * name, ReturnType (* func_ptr)(Pa
 	duk_put_prop_string( ctx, -2, "_func_ptr");
 	duk_put_global_string( ctx, name );
 }
+char test_func( int param )
+{
+	return 'c';
+}
 
 
 int main(int argc, char *argv[]) {
@@ -102,6 +115,7 @@ int main(int argc, char *argv[]) {
 	duk_put_global_string(ctx, "adder");
 
 	bindFunc( ctx, "hello2", hello2 );
+	bindFunc( ctx, "hello", test_func );
 
 	duk_eval_string(ctx, "print(hello2());");
 	duk_eval_string(ctx, "print('2+3=' + adder(2, 3));");
