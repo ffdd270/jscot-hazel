@@ -8,6 +8,11 @@
 #include <duktape.h>
 #include "bind_param.h"
 
+template <typename ReturnType>
+ReturnType caller(duk_context * ctx, ReturnType(* func)() )
+{
+	return func();
+}
 
 template <typename ReturnType, typename Param1>
 ReturnType caller(duk_context * ctx, ReturnType(* func)(Param1) )
@@ -45,6 +50,7 @@ duk_ret_t realBindFuncVoid(duk_context * ctx)
 	duk_get_prop_string( ctx, -1, "_func_ptr" );
 	auto func = reinterpret_cast<void (*)(Params...)>( duk_to_pointer( ctx,  -1  ) );
 	caller( ctx, func );
+
 	return 0;
 }
 

@@ -12,7 +12,14 @@
 template <typename Type>
 Type getParam(duk_context * ctx, int place)
 {
+	static_assert(false); // 타입 없으면 폭발 예정..
 	return Type();
+}
+
+template <>
+const char * getParam(duk_context * ctx, int place)
+{
+	return duk_get_string(ctx, place);
 }
 
 template <>

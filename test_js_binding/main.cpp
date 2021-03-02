@@ -104,21 +104,67 @@ char test_func( int param )
 }
 
 
+duk_ret_t obj_getter( duk_context *ctx )
+{
+	if ( duk_is_object( ctx, -1 ) )
+	{
+		duk_get_prop_string( ctx, -1, "open" );
+
+		if ( duk_is_boolean( ctx, -1 ))
+		{
+			printf( "OK ! : %d ", duk_get_boolean( ctx, -1 ));
+		}
+
+	}
+	else
+	{
+		printf("FAILED");
+	}
+
+	return 0;
+}
+
+
+duk_ret_t obj_setter( duk_context *ctx )
+{
+	if ( duk_is_object( ctx, -1 ) )
+	{
+		duk_push_boolean( ctx, false ); //  -1. 무조건 false
+		duk_put_prop_string( ctx, 0, "open" ); // 0.
+	}
+	else
+	{
+		printf("FAILED");
+	}
+
+	return 0;
+}
+
+
+
+
 int main(int argc, char *argv[]) {
 	duk_context *ctx = duk_create_heap_default();
 
 	(void) argc; (void) argv;  /* suppress warning */
 
+	duk_push_c_function(ctx, obj_getter, DUK_VARARGS);
+	duk_put_global_string(ctx, "obj_getter");
+
+	duk_push_c_function(ctx, obj_setter, DUK_VARARGS);
+	duk_put_global_string(ctx, "obj_setter");
+
 	duk_push_c_function(ctx, native_print, DUK_VARARGS);
 	duk_put_global_string(ctx, "print");
-	duk_push_c_function(ctx, native_adder, DUK_VARARGS);
-	duk_put_global_string(ctx, "adder");
+
 
 	bindFunc( ctx, "hello2", hello2 );
 	bindFunc( ctx, "hello", test_func );
 
-	duk_eval_string(ctx, "print(hello2());");
-	duk_eval_string(ctx, "print('2+3=' + adder(2, 3));");
+	duk_eval_string(ctx, "obj_getter({ open: true })");
+	duk_eval_string(ctx, "var obj = { open: true };\n"
+					  	"obj_setter(obj);\n"
+	   					"print(obj.open);\n");
 	duk_pop(ctx);  /* pop eval result */
 
 	duk_destroy_heap(ctx);
