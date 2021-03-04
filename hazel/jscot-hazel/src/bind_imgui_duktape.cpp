@@ -22,7 +22,7 @@ duk_ret_t bind_ImGui_Begin( duk_context *ctx )
 
 	// 파라미터 Set
 	const char * name = nullptr;
-	bool open = true;
+	bool open = false;
 	ImGuiWindowFlags flags = 0;
 
 	name = duk_to_string(ctx, 0);
@@ -55,16 +55,25 @@ duk_ret_t bind_ImGui_Begin( duk_context *ctx )
 
 	if ( top_sz > 1 )
 	{
-		duk_push_boolean( ctx, open ); // -1에 쌓이고..
+		duk_push_boolean( ctx, false ); // -1에 쌓이고..
 		duk_put_prop_string( ctx, 1, "open" );
 	}
 
 	return 0;
 }
 
+void bind_print( const char * str )
+{
+	printf("%s", str );
+}
+
 
 void bind_imgui_duktape(duk_context *ptr_context)
 {
-	bindFunc( ptr_context, "Begin", Begin );
+	duk_push_c_function( ptr_context, bind_ImGui_Begin, DUK_VARARGS );
+	duk_put_global_string( ptr_context,"Begin" );
+
+	//bindFunc( ptr_context, "Begin", Begin );
 	bindFunc( ptr_context, "End", ImGui::End );
+	bindFunc( ptr_context, "print", bind_print );
 }

@@ -39,3 +39,4 @@ cpp_function_finder/.idea
 */.idea
 */cmake-build-debug
 hazel/jscot-hazel/cmake-build-debug
+hazel/imgui.ini

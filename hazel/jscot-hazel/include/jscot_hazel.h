@@ -6,6 +6,7 @@
 #define JSCOT_HAZEL_PARENT_JSCOT_HAZEL_H
 
 #include <duktape.h>
+#include <string_view>
 
 class JscotHazel
 {
@@ -13,6 +14,8 @@ public:
 	JscotHazel();
 
 	void Init();
+	bool LoadFile( std::string_view file_path );
+	void LoadString( std::string_view load_string );
 	void Loop();
 private:
 	duk_context * mPtrDukContext;
