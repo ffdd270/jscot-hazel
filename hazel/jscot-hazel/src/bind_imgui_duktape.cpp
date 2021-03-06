@@ -1,8 +1,10 @@
 #include "bind_imgui_duktape.h"
 #include "bind_js.h"
 #include "imgui.h"
-#include <exception>
+#include <duktape.h>
 #include <stdexcept>
+#include "bind_imgui_generate.h"
+
 
 void Begin( const char * str )
 {
@@ -51,15 +53,16 @@ duk_ret_t bind_ImGui_Begin( duk_context *ctx )
 	}
 
 	// Execute
-	ImGui::Begin( name, &open, flags );
+	bool ok = ImGui::Begin( name, &open, flags );
 
 	if ( top_sz > 1 )
 	{
-		duk_push_boolean( ctx, false ); // -1에 쌓이고..
+		duk_push_boolean( ctx, open ); // -1에 쌓이고..
 		duk_put_prop_string( ctx, 1, "open" );
 	}
 
-	return 0;
+	duk_push_boolean( ctx, ok );
+	return 1;
 }
 
 void bind_print( const char * str )
@@ -76,4 +79,6 @@ void bind_imgui_duktape(duk_context *ptr_context)
 	//bindFunc( ptr_context, "Begin", Begin );
 	bindFunc( ptr_context, "End", ImGui::End );
 	bindFunc( ptr_context, "print", bind_print );
+
+	bind_imgui_duktape_generate( ptr_context );
 }

@@ -9,9 +9,15 @@
 #include <duktape.h>
 
 template <typename Type>
-void pushReturn(duk_context * ctx, int place)
+void pushReturn(duk_context * ctx, Type value)
 {
-	return Type();
+	static_assert(false); // 타입 없으면 폭발 예정..
+}
+
+template <>
+inline void pushReturn(duk_context * ctx, bool value)
+{
+	duk_push_boolean(ctx, value);
 }
 
 

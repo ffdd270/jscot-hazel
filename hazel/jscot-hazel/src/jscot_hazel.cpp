@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <iostream>
 
-JscotHazel::JscotHazel()
+JscotHazel::JscotHazel() : mPtrDukContext( nullptr )
 {
 
 }
@@ -45,10 +45,16 @@ const char * Base =  "var JscotHazel = /** @class */ (function () {\n"
 // -> 바인드
 void JscotHazel::Init()
 {
+	if( mPtrDukContext != nullptr )
+	{
+		duk_destroy_heap(mPtrDukContext);
+		mPtrDukContext = nullptr;
+	}
+
 	mPtrDukContext = duk_create_heap_default();
 	bind_imgui_duktape(mPtrDukContext);
 
-	if(!LoadFile("script/main.js"))
+	if(!LoadFile("dest/main.js"))
 	{
 		throw std::logic_error("MAIN.JS LOAD FAILED");
 	}

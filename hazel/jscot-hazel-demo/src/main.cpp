@@ -15,6 +15,7 @@ int main()
 	JscotHazel hazel;
 	hazel.Init();
 
+	bool pressed = false;
 	sf::Clock deltaClock;
 	while (window.isOpen())
 	{
@@ -25,9 +26,27 @@ int main()
 			if (event.type == sf::Event::Closed) {
 				window.close();
 			}
+
+			if( event.type == sf::Event::KeyPressed )
+			{
+				if ( event.key.code == sf::Keyboard::F5 && ( !pressed )  )
+				{
+					hazel.Init();
+					pressed = true;
+				}
+			}
+
+			if( event.type == sf::Event::KeyReleased )
+			{
+				if ( event.key.code == sf::Keyboard::F5 )
+				{
+					pressed = false;
+				}
+			}
 		}
 
 		ImGui::SFML::Update(window, deltaClock.restart());
+
 
 		hazel.Loop();
 

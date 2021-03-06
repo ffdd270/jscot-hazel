@@ -4,7 +4,7 @@ project(jscot_hazel)
 set(CMAKE_CXX_STANDARD 17)
 
 set( SRC_FILE
-		include/bind_js.h include/bind_param.h include/bind_return.h src/jscot_hazel.cpp src/bind_imgui_duktape.h src/bind_imgui_duktape.cpp)
+		include/bind_js.h include/bind_param.h include/bind_return.h src/jscot_hazel.cpp src/bind_imgui_duktape.h src/bind_imgui_duktape.cpp src/bind_imgui_generate.cpp src/bind_imgui_generate.h include/imgui_typedef.h)
 
 set( IMGUI_FILES
 		external/imgui/imgui.cpp

@@ -17,13 +17,25 @@ var JscotHazel = /** @class */ (function () {
 var DemoWindow = /** @class */ (function () {
     function DemoWindow() {
         this.table = { open: true };
+        this.text = "NOT PUSHED";
     }
     DemoWindow.prototype.onRender = function () {
-        Begin("Test Window", this.table, 0);
+        if (!Begin("Test Window", this.table, 0)) {
+            return;
+        }
+        if (Button(this.text, { x: 100, y: 100 })) {
+            this.text = "PUSHED";
+        }
+        ImGui_Text("Test Table : " + this.table.open);
         End();
     };
     return DemoWindow;
 }());
+var Test;
+(function (Test) {
+    function Ab() {
+    }
+})(Test || (Test = {}));
 var demo_window = new DemoWindow;
 print("JSCOT HAZEL. BOOT!");
 JscotHazel.AddWindow(demo_window);

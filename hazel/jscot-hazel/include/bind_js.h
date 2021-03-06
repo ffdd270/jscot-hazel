@@ -7,6 +7,7 @@
 
 #include <duktape.h>
 #include "bind_param.h"
+#include "bind_return.h"
 
 template <typename ReturnType>
 ReturnType caller(duk_context * ctx, ReturnType(* func)() )
@@ -30,6 +31,12 @@ template <typename ReturnType, typename Param1, typename Param2, typename Param3
 ReturnType caller(duk_context * ctx, ReturnType(* func)(Param1, Param2, Param3) )
 {
 	return func( getParam<Param1>(ctx, 0), getParam<Param2>(ctx, 1), getParam<Param3>(ctx, 2) );
+}
+
+template <typename ReturnType, typename Param1, typename Param2, typename Param3, typename Param4>
+ReturnType caller(duk_context * ctx, ReturnType(* func)(Param1, Param2, Param3, Param4) )
+{
+	return func( getParam<Param1>(ctx, 0), getParam<Param2>(ctx, 1), getParam<Param3>(ctx, 2), getParam<Param4>(ctx, 3) );
 }
 
 template <typename ReturnType, typename ...Params>
